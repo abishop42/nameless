@@ -1,4 +1,4 @@
-OBJS = runner.o file_reader.o
+OBJS = runner.o file_reader.o comms.o
 CC = g++
 LIBS = -lzmq
 INCLUDES = -I /usr/local/include
@@ -11,6 +11,9 @@ TARGET = -o monitor
 
 all: $(OBJS)
 	$(CC) $(INCLUDES) $(LIBS) $(TARGET) $(OBJS) main.cpp
+
+comms.o: comms.h comms.cpp
+	$(CC) $(CFLAGS) comms.cpp
 
 runner.o: runner.h runner.cpp
 	$(CC) $(CFLAGS) runner.cpp

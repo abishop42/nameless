@@ -1,6 +1,7 @@
 #pragma once
 
 #include "comms.h"
+#include <unistd.h>
 
 
 client_module::client_module(std::string address): comms_module(address, 1, ZMQ_REP)
@@ -22,6 +23,7 @@ void client_module::send_message(std::string message)
 	zmq::message_t response (4);
 	memcpy ((void *) response.data (), "done", 4);
 	socket->send (response);
+	std::cout << "sent response" << std::endl;
 }
 
 void client_module::receive_message()
@@ -32,7 +34,7 @@ void client_module::receive_message()
 		socket->recv(&request);
 		std::string message = std::string(static_cast<char*>(request.data()), request.size());
 		std::cout << "received message: " << message << std::endl;
-
+		sleep(10);
 		this->send_message("I did get stuff");
 	}
 }
@@ -52,11 +54,21 @@ bool server_module::setup()
 
 void server_module::send_message(std::string message)
 {
-
+	while (true)
+	{
+		zmq::message_t request (28);
+		memcpy ((void *) request.data (), "I want to get some breakfast", 28);
+		socket->send (request);
+		std::cout << "message sent waiting for reply" << std::endl;
+		this->receive_message();
+	}
 }
 
 void server_module::receive_message()
 {
-
+	zmq::message_t response;
+	socket->recv(&response);
+	std::string message = std::string(static_cast<char*>(response.data()), response.size());
+	std::cout << "received message: " << message << std::endl;
 }
 

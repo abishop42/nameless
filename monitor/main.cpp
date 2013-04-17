@@ -18,13 +18,13 @@ int main(int argc, char* argv[])
 
 
 
-	if (strcmp(argv[1], "server") == 0)
+	if (argc > 1 and strcmp(argv[1], "server") == 0)
 	{
 		std::cout << "server will be built" << std::endl;
 		server_module server = server_module(server_address);
 		server.setup();
 	}
-	else if (strcmp(argv[1],"client") == 0)
+	else if (argc > 1 and strcmp(argv[1],"client") == 0)
 	{
 		std::cout << "client will be built" << std::endl;
 		client_module client = client_module(client_address);

@@ -6,10 +6,16 @@
 
 class comms_module 
 {
-	private:
+	protected:
 		std::string bind_address;
+		zmq::context_t* ctx;
+		zmq::socket_t* socket;
 	public:
-		comms_module(std::string address): bind_address(address) {}
+		comms_module(std::string address, int num_theads, int socket_type): bind_address(address)
+		{
+			ctx = new zmq::context_t(num_theads);
+			socket = new zmq::socket_t(*ctx, socket_type);
+		}
 		std::string get_address() { return bind_address;}
 };
 
@@ -21,10 +27,6 @@ class client_module: public comms_module
 		bool setup();
 		void send_message(std::string message);
 		void receive_message();
-
-	private:
-		zmq::context_t context;
-		zmq::socket_t socket;
 };
 
 
@@ -36,9 +38,6 @@ class server_module: public comms_module
 		void send_message(std::string message);
 		void receive_message();
 
-	//private:
-	//	zmq::context_t context;
-	//	zmq::socket_t socket;
 };
 
 
